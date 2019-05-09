@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fjf.selection.course.mapper.StudentMapper" >
+  <resultMap id="BaseResultMap" type="com.fjf.selection.course.domain.Student" >
+    <id column="userID" property="userId" jdbcType="INTEGER" />
+    <result column="userName" property="userName" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="birthYear" property="birthYear" jdbcType="DATE" />
+    <result column="grade" property="grade" jdbcType="DATE" />
+    <result column="collegeID" property="collegeId" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from student
+    where userID = #{userId,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteById">
+        delete from student
+        where userID = #{userId}
+    </delete>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="userId" parameterType="com.fjf.selection.course.domain.Student" >
+    insert into student (userName, sex,
+      birthYear, grade, collegeID
+      )
+    values (#{userName,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
+      #{birthYear,jdbcType=DATE}, #{grade,jdbcType=DATE}, #{collegeId,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.fjf.selection.course.domain.Student" >
+    update student
+    set userName = #{userName,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      birthYear = #{birthYear,jdbcType=DATE},
+      grade = #{grade,jdbcType=DATE},
+      collegeID = #{collegeId,jdbcType=INTEGER}
+    where userID = #{userId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select userID, userName, sex, birthYear, grade, collegeID
+    from student
+    where userID = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select userID, userName, sex, birthYear, grade, collegeID
+    from student
+  </select>
+    
+    <select id="findCollegeById" resultType="java.lang.Integer">
+        select count(*)
+        from student
+        where collegeID = #{collegeId}
+    </select>
+    <select id="getStudentNum" resultType="java.lang.Integer">
+        select count(*)
+        from student
+    </select>
+    <select id="page" resultType="Student" parameterType="map">
+        select userID, userName, sex, birthYear, grade, collegeID
+        from student
+        limit #{page}, #{pageSize}
+    </select>
+
+    <select id="getStudentListById" resultType="com.fjf.selection.course.domain.Student" parameterType="int">
+        select userID, userName, collegeID
+        from student
+        where userID in 
+        <foreach collection="list" open="(" close=")" item="id" separator=",">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

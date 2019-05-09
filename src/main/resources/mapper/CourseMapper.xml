@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fjf.selection.course.mapper.CourseMapper" >
+  <resultMap id="BaseResultMap" type="com.fjf.selection.course.domain.Course" >
+    <id column="courseID" property="courseId" jdbcType="INTEGER" />
+    <result column="courseName" property="courseName" jdbcType="VARCHAR" />
+    <result column="teacherID" property="teacherId" jdbcType="INTEGER" />
+    <result column="courseTime" property="courseTime" jdbcType="VARCHAR" />
+    <result column="classRoom" property="classRoom" jdbcType="VARCHAR" />
+    <result column="courseWeek" property="courseWeek" jdbcType="INTEGER" />
+    <result column="courseType" property="courseType" jdbcType="VARCHAR" />
+    <result column="collegeID" property="collegeId" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from selection_course.course
+    where courseID = #{courseID,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fjf.selection.course.domain.Course" >
+    insert into selection_course.course (courseName, teacherID,
+      courseTime, classRoom, courseWeek, 
+      courseType, collegeID, score
+      )
+    values (#{courseName,jdbcType=VARCHAR}, #{teacherId,jdbcType=INTEGER},
+      #{courseTime,jdbcType=VARCHAR}, #{classRoom,jdbcType=VARCHAR}, #{courseWeek,jdbcType=INTEGER}, 
+      #{courseType,jdbcType=VARCHAR}, #{collegeId,jdbcType=INTEGER}, #{score,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.fjf.selection.course.domain.Course" >
+    update selection_course.course
+    set courseName = #{courseName,jdbcType=VARCHAR},
+      teacherID = #{teacherId,jdbcType=INTEGER},
+      courseTime = #{courseTime,jdbcType=VARCHAR},
+      classRoom = #{classRoom,jdbcType=VARCHAR},
+      courseWeek = #{courseWeek,jdbcType=INTEGER},
+      courseType = #{courseType,jdbcType=VARCHAR},
+      collegeID = #{collegeId,jdbcType=INTEGER},
+      score = #{score,jdbcType=INTEGER}
+    where courseID = #{courseId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select courseID, courseName, teacherID, courseTime, classRoom, courseWeek, courseType,
+    collegeID, score
+    from selection_course.course
+    where courseID = #{courseId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select courseID, courseName, teacherID, courseTime, classRoom, courseWeek, courseType, 
+    collegeID, score
+    from selection_course.course
+  </select>
+    
+    <select id="getCourseNum" resultType="int">
+        select count(*) from selection_course.course;
+    </select>
+
+    <select id="page" resultType="Course" parameterType="map">
+        SELECT
+        courseID, courseName, teacherID, courseTime, classRoom, courseWeek, courseType,
+        collegeID, score
+        FROM selection_course.course
+        LIMIT #{page}, #{pageSize}
+    </select>
+
+    <select id="findTeacherById" resultType="java.lang.Integer">
+        select count(*)
+        from course
+        where teacherID = #{userId}
+    </select>
+
+    <select id="findCollegeById" resultType="java.lang.Integer">
+        select count(*)
+        from course
+        where collegeID = #{collegeId}
+    </select>
+
+    <select id="getByTeacherId" resultType="java.lang.Integer">
+        select count(*)
+        from course
+        where teacherID = #{teacherId}
+    </select>
+
+    <select id="coursePageByTeacherId" resultType="com.fjf.selection.course.domain.Course">
+        select courseID, courseName, teacherID, courseTime, classRoom, courseWeek, courseType,
+        collegeID, score
+        from course
+        where teacherID = #{teacherId}
+        limit #{page}, #{pageSize}
+    </select>
+    <select id="getCourseListByCourseId" resultMap="BaseResultMap" parameterType="map">
+        select courseID, courseName, teacherID, courseTime, classRoom, courseWeek, courseType,
+        collegeID, score
+        from course
+        <if test="selectedCourseIdList != null and selectedCourseIdList.size > 0">
+            where courseID not in
+            <foreach collection="selectedCourseIdList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        limit #{page}, #{pageSize}
+    </select>
+    <select id="getOptionalNum" resultType="int" parameterType="list">
+        select count(*)
+        from course
+        <if test="list != null and list.size > 0">
+            where courseID not in
+            <foreach collection="list" open="(" close=")" separator="," item="id">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+    <select id="getRetreatCourseListByCourseId" resultMap="BaseResultMap">
+        select courseID, courseName, teacherID, courseTime, classRoom, courseWeek, courseType,
+        collegeID, score
+        from course
+        <if test="selectedCourseIdList != null and selectedCourseIdList.size == 0">
+            where 1 = -1
+        </if>
+        <if test="selectedCourseIdList != null and selectedCourseIdList.size > 0">
+            where courseID in
+            <foreach collection="selectedCourseIdList" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+        limit #{page}, #{pageSize}
+    </select>
+</mapper>

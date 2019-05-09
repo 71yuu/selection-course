@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fjf.selection.course.mapper.SelectedCourseMapper" >
+  <resultMap id="BaseResultMap" type="com.fjf.selection.course.domain.SelectedCourse" >
+    <result column="courseID" property="courseId" jdbcType="INTEGER" />
+    <result column="studentID" property="studentId" jdbcType="INTEGER" />
+    <result column="mark" property="mark" jdbcType="INTEGER" />
+  </resultMap>
+  <insert id="insert" parameterType="com.fjf.selection.course.domain.SelectedCourse" >
+    insert into selection_course.selectedcourse (courseID, studentID, mark
+      )
+    values (#{courseId,jdbcType=INTEGER}, #{studentId,jdbcType=INTEGER}, #{mark,jdbcType=INTEGER}
+      )
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select courseID, studentID, mark
+    from selection_course.selectedcourse
+  </select>
+    <select id="getSelectedCourseNum" resultType="java.lang.Integer">
+        select count(distinct courseID) from course
+    </select>
+
+    <delete id="deleteByCourseId" parameterType="int">
+        delete from selection_course.selectedcourse
+        where courseID = #{courseId}
+    </delete>
+    <delete id="deleteByStudentId">
+        delete from selectedcourse
+        where studentID = #{studentId}
+    </delete>
+    <delete id="deleteByCourseIdAndStudentId">
+        delete from selectedcourse
+        where studentID = #{selectedCourse.studentId} and courseID = #{selectedCourse.courseId}
+    </delete>
+
+    <select id="page" resultType="SelectedCourse" parameterType="map">
+        SELECT
+          distinct courseID
+        FROM selection_course.selectedcourse
+        LIMIT #{page}, #{pageSize}
+    </select>
+    <select id="getStuCount" resultType="int">
+        select count(*) from selectedcourse
+        where courseID = #{courseId}
+    </select>
+    <select id="getStudentList" resultType="java.lang.Integer">
+        select studentID
+        from selectedcourse
+        where courseID = #{courseId}
+        limit #{page}, #{pageSize}
+    </select>
+    <select id="getCourseIdByStudentId" resultType="java.lang.Integer">
+        select courseID
+        from selectedcourse
+        where studentID = #{studentId}
+    </select>
+
+</mapper>

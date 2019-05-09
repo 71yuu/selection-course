@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fjf.selection.course.mapper.CollegeMapper" >
+  <resultMap id="BaseResultMap" type="com.fjf.selection.course.domain.College" >
+    <id column="collegeID" property="collegeId" jdbcType="INTEGER" />
+    <result column="collegeName" property="collegeName" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from selection_course.college
+    where collegeID = #{collegeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fjf.selection.course.domain.College" >
+    insert into selection_course.college (collegeName)
+    values (#{collegeName,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.fjf.selection.course.domain.College" >
+    update selection_course.college
+    set collegeName = #{collegeName,jdbcType=VARCHAR}
+    where collegeID = #{collegeId,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select collegeID, collegeName
+    from selection_course.college
+    where collegeID = #{collegeId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select collegeID, collegeName
+    from selection_course.college
+  </select>
+
+    <select id="getCollegeNum" resultType="java.lang.Integer">
+        select count(*)
+        from college
+    </select>
+
+    <select id="page" resultType="College" parameterType="map">
+        SELECT
+        collegeID, collegeName
+        FROM college
+        LIMIT #{page}, #{pageSize}
+    </select>
+</mapper>
