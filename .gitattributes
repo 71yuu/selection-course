@@ -6,4 +6,4 @@
 *.java      eol=lf
 *.sh        eol=lf
 
-*.js linguist-language=Vue
+*.js linguist-language=Java
